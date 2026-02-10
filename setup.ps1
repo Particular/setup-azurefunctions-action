@@ -1,6 +1,5 @@
 param (
-    [string]$AppName,
-    [string]$StorageName,
+    [string]$Suffix,
     [string]$PublishProfileEnvName,
     [string]$tagName,
     [string]$azureCredentials

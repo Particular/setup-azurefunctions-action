@@ -4140,7 +4140,7 @@ async function run() {
 
             await exec.exec('pwsh', [
                 '-File', setupPs1,
-                '-Suffix', Suffix,
+                '-Suffix', suffix,
                 '-PublishProfileEnvName', publishProfileEnvName,
                 '-tagName', tagName,
                 '-azureCredentials', azureCredentials
@@ -4154,7 +4154,7 @@ async function run() {
 
             await exec.exec('pwsh', [
                 '-File', cleanupPs1,
-                '-Suffix', Suffix
+                '-Suffix', suffix
             ]);
 
         }

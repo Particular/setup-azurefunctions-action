@@ -1,11 +1,18 @@
 param (
-    [string]$AppName,
-    [string]$StorageName
+    [string]$Suffix
 )
 $resourceGroup = $Env:RESOURCE_GROUP_OVERRIDE ?? "GitHubActions-RG"
 
+$StorageName = 'pswfunc' + $Suffix
+$AppName = 'psw-functionapp-' + $Suffix
+$PlanName = 'psw-functionsplan-' + $Suffix
+#$AnalyticsWorkspace = $AppName
+
 echo "Cleaning up Functions App $AppName in resource group $resourceGroup"
-#$ignore = az servicebus namespace delete --resource-group $resourceGroup --name $ASBName
+az functionapp delete --resource-group $resourceGroup --name $AppName
+
+echo "Cleaning up App Service Plan $PlanName in resource group $resourceGroup"
+az appservice plan delete --resource-group $resourceGroup --name $PlanName --yes
 
 echo "Cleaning up storage account $StorageName in resource group $resourceGroup"
-#$ignore = TODO:
+az storage account delete --name $StorageName --resource-group $resourceGroup --yes

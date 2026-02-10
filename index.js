@@ -25,18 +25,12 @@ async function run() {
 
             console.log("Running setup action");
 
-            let suffix = Math.round(10000000000 * Math.random());
-            let AppName = 'psw-functions-' + suffix;
-            let StorageName = 'pswfuncstorage' + suffix;
-            core.saveState('AppName', AppName);
-            core.saveState('StorageName', StorageName);
-
-            console.log("AppName = " + AppName);
+            let suffix = Math.round(10000000000 * Math.random()).toString();
+            core.saveState('Suffix', suffix);
 
             await exec.exec('pwsh', [
                 '-File', setupPs1,
-                '-AppName', AppName,
-                '-StorageName', StorageName,
+                '-Suffix', Suffix,
                 '-PublishProfileEnvName', publishProfileEnvName,
                 '-tagName', tagName,
                 '-azureCredentials', azureCredentials
@@ -50,8 +44,7 @@ async function run() {
 
             await exec.exec('pwsh', [
                 '-File', cleanupPs1,
-                '-AppName', AppName,
-                '-StorageName', StorageName
+                '-Suffix', Suffix
             ]);
 
         }

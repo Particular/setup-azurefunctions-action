@@ -10,6 +10,10 @@ $credentials = $azureCredentials | ConvertFrom-Json
 
 $resourceGroup = $Env:RESOURCE_GROUP_OVERRIDE ?? "GitHubActions-RG"
 
+$StorageName = 'pswfunc' + $Suffix
+$AppName = 'psw-functionapp-' + $Suffix
+$PlanName = 'psw-functionsplan-' + $Suffix
+
 if ($Env:REGION_OVERRIDE) {
     $region = $Env:REGION_OVERRIDE
 }
@@ -25,26 +29,22 @@ $runnerOsTag = "RunnerOS=$($Env:RUNNER_OS)"
 $dateTag = "Created=$(Get-Date -Format "yyyy-MM-dd")"
 
 Write-Output "Creating storage account $StorageName in resource group $resourceGroup (This can take a while.)"
-$storageResult = az storage account create --name $StorageName --location "$region" --resourceGroup $resourceGroup --sku Standard_LRS --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
-echo ($storageResult | ConvertTo-Json)
+$storage = az storage account create --name $StorageName --location $region --resource-group $resourceGroup --sku Standard_LRS --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
+echo ($storage | ConvertTo-Json)
+
+Write-Output "Creating app service plan $PlanName in resource group $resourceGroup (This can take a while.)"
+# Functions can't use SHARED, and Y1 for consumption not supported by Azure CLI https://github.com/Azure/azure-cli/issues/8388
+$plan = az appservice plan create --name $PlanName --resource-group $resourceGroup --location $region --sku B1 --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
 
 Write-Output "Creating Azure Functions App $AppName (This can take a while.)"
-$appDetails = az functionapp create --name $AppName --storage-account $StorageName --consumption-plan-location $region --resource-group $resourceGroup --functionsVersion "4"
+$app = az functionapp create --name $AppName --resource-group $resourceGroup --storage-account $StorageName --plan $PlanName --functions-version "4" --disable-app-insights true --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
+$hostname = $app.defaultHostName
+Write-Output "Functions app host is $hostname"
 
-# Write-Output "Assigning roles to Azure Service Bus namespace $ASBName"
-# az role assignment create --assignee $credentials.principalId --role "Azure Service Bus Data Owner" --scope $details.id > $null
+Write-Output "Assigning roles to Azure Functions App $AppName"
+az role assignment create --assignee $credentials.principalId --role "Website Contributor" --scope $details.id > $null
 
-# Write-Output "Getting publish profile"
-# #$keys = az servicebus namespace authorization-rule keys list --resource-group $resourceGroup --namespace-name $ASBName --name RootManageSharedAccessKey | ConvertFrom-Json
-# #$connectString = $keys.primaryConnectionString
-# #Write-Output "::add-mask::$connectString"
-
-# Write-Output "Getting connection string without manage rights"
-# az servicebus namespace authorization-rule create --resource-group $resourceGroup --namespace-name $ASBName --name RootNoManageSharedAccessKey --rights Send Listen > $null
-# $noManageKeys = az servicebus namespace authorization-rule keys list --resource-group $resourceGroup --namespace-name $ASBName --name RootNoManageSharedAccessKey | ConvertFrom-Json
-# $noManageConnectString = $noManageKeys.primaryConnectionString
-# Write-Output "::add-mask::$noManageConnectString"
-# $noManageConnectionStringName = "$($connectionStringName)_Restricted"
-
-# Write-Output "$connectionStringName=$connectString" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-# Write-Output "$noManageConnectionStringName=$noManageConnectString" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+Write-Output "Getting publish profile"
+$publishProfileJson = az functionapp deployment list-publishing-profiles --name $AppName --resource-group $resourceGroup
+Write-Output "::add-mask::$publishProfileJson"
+Write-Output "$PublishProfileEnvName=$publishProfileJson" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append

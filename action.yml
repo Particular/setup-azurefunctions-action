@@ -1,0 +1,16 @@
+name: setup-azurefunctions-action
+description: Set up an Azure Functions app for testing
+inputs:
+  publish-profile-env-name:
+    description: The name of the environment variable to fill with the publish profile for the Functions App
+    required: true
+  azure-credentials:
+    description: The JSON blob containing the Azure login credentials. Required setting up the RBAC assignments.
+    required: true
+  tag:
+    description: The name of the component Azure Functions app is being used for. The Functions app is tagged with this value.
+    required: true
+runs:
+  using: node20
+  main: dist/index.js
+  post: dist/index.js

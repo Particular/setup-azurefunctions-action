@@ -40,7 +40,7 @@ async function run() {
 
             console.log("Running cleanup");
 
-            let AppName = core.getState('AppName');
+            let suffix = core.getState('Suffix');
 
             await exec.exec('pwsh', [
                 '-File', cleanupPs1,

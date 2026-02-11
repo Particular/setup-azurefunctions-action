@@ -50,11 +50,11 @@ $app = az functionapp create --name $AppName --resource-group $resourceGroup `
     --disable-app-insights true `
     --https-only true `
     --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
-$hostname = $app.defaultHostName
-Write-Output "Functions app host is $hostname"
 if (-not $?) {
     throw "Unable to set up Functions app"
 }
+$hostname = $app.defaultHostName
+Write-Output "Functions app host is $hostname"
 
 Write-Output "Assigning roles to Azure Functions App $AppName"
 az role assignment create --assignee $credentials.principalId --role "Website Contributor" --scope $app.id > $null
@@ -63,7 +63,10 @@ if (-not $?) {
 }
 
 Write-Output "Turning on 'SCM Basic Auth Publishing Credentials' setting so that a publish profile will work"
-az webapp config set --name $AppName --resource-group $resourceGroup --scm-basic-auth-enabled true > $null
+az resource update --resource-group $resourceGroup --name scm --namespace Microsoft.Web --resource-type basicPublishingCredentialsPolicies --parent "sites/$AppName" --set properties.allow=true > $null
+if (-not $?) {
+    throw "Unable to turn on 'SCM Basic Auth Publishing Credentials' so that publish profiles will work"
+}
 
 Write-Output "Getting publish profile"
 $publishProfileXml = az functionapp deployment list-publishing-profiles --name $AppName --resource-group $resourceGroup --xml

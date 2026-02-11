@@ -92,7 +92,7 @@ $envVarsToPromote -split ',' | ForEach-Object {
 }
 $settingsJson = $settings | ConvertTo-Json
 Write-Output $settingsJson | Out-File -FilePath functions-settings.json -Encoding utf-8
-az functionapp config appsettings set --name $AppName --resource-group $resourceGroup --settings @functions-settings.$settingsJson
+az functionapp config appsettings set --name $AppName --resource-group $resourceGroup --settings @functions-settings.json
 if (-not $?) {
     throw "Unable to set app settings on Functions app"
 }

@@ -35,13 +35,20 @@ jobs:
         env:
           FunctionsPublishProfile: ${{ steps.run.outputs.publish-profile }}
         run: |
+          $appName = "${{ steps.run.outputs.app-name }}"
+          echo "App name is $appName"
+          if ($appName.Length -le 0) {
+            throw "Output app-name was not set by action"
+          }
+
+
           $hostname = "${{ steps.run.outputs.hostname }}"
           echo "Functions app hostname is $hostname"
           if ($hostname.Length -le 0) {
-            throw "Host name was not set by action"
+            throw "Output hostname was not set by action"
           }
           $publishProfile = $Env:FunctionsPublishProfile
           echo "Publish profile length is $($publishProfile.Length)"
           if ( $publishProfile.Length -le 0 ) {
-            throw "Environment variable 'FunctionsPublishProfile' not set by action."
+            throw "Output publish-profile not set by action."
           }

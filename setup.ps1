@@ -25,11 +25,6 @@ else {
 }
 Write-Output "Actions agent running in Azure region $region"
 
-if ($region -eq "westus") {
-    Write-Output "Overriding region to eastus because of quota issue in westus"
-    $region = "centralus"
-}
-
 $packageTag = "Package=$tagName"
 $runnerOsTag = "RunnerOS=$($Env:RUNNER_OS)"
 $dateTag = "Created=$(Get-Date -Format "yyyy-MM-dd")"

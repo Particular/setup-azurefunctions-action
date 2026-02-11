@@ -1,13 +1,9 @@
 name: CI
 on:
   pull_request:
-    paths-ignore:
-      - '**.md'
   push:
     branches:
       - main
-    paths-ignore:
-      - '**.md'
   workflow_dispatch:
 jobs:
   ci:
@@ -33,7 +29,6 @@ jobs:
         uses: ./
         with:
           azure-credentials: ${{ secrets.AZURE_ACI_CREDENTIALS }}
-          publish-profile-env-name: FunctionsPublishProfile
           tag: setup-azurefunctions-action
       - name: Validate
         shell: pwsh

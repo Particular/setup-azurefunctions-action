@@ -62,10 +62,14 @@ if (-not $?) {
     throw "Unable to assign roles to app"
 }
 
-Write-Output "Turning on 'SCM Basic Auth Publishing Credentials' setting so that a publish profile will work"
+Write-Output "Enabling publish profiles"
 az resource update --resource-group $resourceGroup --name scm --namespace Microsoft.Web --resource-type basicPublishingCredentialsPolicies --parent "sites/$AppName" --set properties.allow=true > $null
 if (-not $?) {
     throw "Unable to turn on 'SCM Basic Auth Publishing Credentials' so that publish profiles will work"
+}
+az resource update --resource-group $resourceGroup --name ftp --namespace Microsoft.Web --resource-type basicPublishingCredentialsPolicies --parent "sites/$AppName" --set properties.allow=true > $null
+if (-not $?) {
+    throw "Unable to turn on 'FTP Basic Auth Publishing Credentials' so that publish profiles will work"
 }
 
 Write-Output "Getting publish profile"

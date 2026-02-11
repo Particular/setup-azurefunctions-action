@@ -13,6 +13,9 @@ $StorageName = 'pswfunc' + $Suffix
 $AppName = 'psw-functionapp-' + $Suffix
 $PlanName = 'psw-functionsplan-' + $Suffix
 
+Write-Output "Outputting Azure CLI version"
+az version
+
 if ($Env:REGION_OVERRIDE) {
     $region = $Env:REGION_OVERRIDE
 }

@@ -43,7 +43,13 @@ if (-not $?) {
 }
 
 Write-Output "Creating Azure Functions App $AppName (This can take a while.)"
-$app = az functionapp create --name $AppName --resource-group $resourceGroup --storage-account $StorageName --plan $PlanName --functions-version "4" --disable-app-insights true --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
+$app = az functionapp create --name $AppName --resource-group $resourceGroup `
+    --storage-account $StorageName `
+    --plan $PlanName `
+    --functions-version "4" `
+    --disable-app-insights true `
+    --https-only true `
+    --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
 $hostname = $app.defaultHostName
 Write-Output "Functions app host is $hostname"
 if (-not $?) {
@@ -55,6 +61,9 @@ az role assignment create --assignee $credentials.principalId --role "Website Co
 if (-not $?) {
     throw "Unable to assign roles to app"
 }
+
+Write-Output "Turning on 'SCM Basic Auth Publishing Credentials' setting so that a publish profile will work"
+az webapp config set --name $AppName --resource-group $resourceGroup --scm-basic-auth-enabled true > $null
 
 Write-Output "Getting publish profile"
 $publishProfileXml = az functionapp deployment list-publishing-profiles --name $AppName --resource-group $resourceGroup --xml

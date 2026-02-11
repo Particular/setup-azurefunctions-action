@@ -15,8 +15,9 @@ This action handles the setup and teardown of an Azure Functions app for running
 
 The result of the action is expressed in output variables, which requires the workflow to provide an `id` as shown above. Given the id `setup-functions` as above, the output variables provided can be accessed as:
 
-* `${{ steps.setup-functions-outputs.hostname }}` - The created Functions app host name
+* `${{ steps.setup-functions.outputs.app-name}}` - The app name, which can be used with the [azure/webapps-deploy action](https://github.com/azure/webapps-deploy).
 * `${{ steps.setup-functions.outputs.publish-profile }}` - The publish profile of the created Functions app, which can be used with the [azure/webapps-deploy action](https://github.com/azure/webapps-deploy).
+* `${{ steps.setup-functions.outputs.hostname }}` - The created Functions app host name, which can be used to construct URLs
 
 ## License
 

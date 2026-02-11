@@ -11,10 +11,12 @@ inputs:
     description: The name of the component Azure Functions app is being used for. The Functions app is tagged with this value.
     required: true
 outputs:
-  hostname:
-    description: The primary host name for the created Functions app
+  app-name:
+    description: The app name for the created Functions app
   publish-profile:
     description: The publish profile for the created Functions app
+  hostname:
+    description: The primary host name for the created Functions app
 runs:
   using: node20
   main: dist/index.js

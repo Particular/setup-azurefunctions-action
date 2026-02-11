@@ -15,6 +15,7 @@ core.saveState('IsPost', true);
 
 let azureCredentials = core.getInput('azure-credentials');
 let tagName = core.getInput('tag');
+let envVarsToPromote = core.getInput('env-vars-to-promote');
 
 async function run() {
 
@@ -30,6 +31,7 @@ async function run() {
             await exec.exec('pwsh', [
                 '-File', setupPs1,
                 '-Suffix', suffix,
+                '-envVarsToPromote', envVarsToPromote,
                 '-tagName', tagName,
                 '-azureCredentials', azureCredentials
             ]);

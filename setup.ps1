@@ -1,5 +1,6 @@
 param (
     [string]$Suffix,
+    [string]$envVarsToPromote,
     [string]$tagName,
     [string]$azureCredentials
 )
@@ -78,10 +79,27 @@ if (-not $?) {
     throw "Unable to get publish profile"
 }
 
+Write-Output "Promoting env vars in list '$envVarsToPromote' to the Functions app"
+$settings = @{
+    'FUNCTIONS_WORKER_RUNTIME' = 'dotnet-isolated'
+}
+$envVarsToPromote -split ',' | ForEach-Object {
+    $key = $_
+    if ($key -gt 0) {
+        $value = Get-Content Env:$key
+        $settings.$key = $value
+    }
+}
+$settingsJson = $settings | ConvertTo-Json
+Write-Output $settingsJson | Out-File -FilePath functions-settings.json -Encoding utf-8
+az functionapp config appsettings set --name $AppName --resource-group $resourceGroup --settings @functions-settings.$settingsJson
+if (-not $?) {
+    throw "Unable to set app settings on Functions app"
+}
+rm functions-settings.json
+
+
 Write-Output "app-name=$AppName" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "hostname=$hostname" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
-#Write-Output "::add-mask::$publishProfileXml"
+Write-Output "::add-mask::$publishProfileXml"
 Write-Output "publish-profile=$publishProfileXml" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
-
-Write-Output "Debugging - Dump publish profile"
-Write-Output $publishProfileXml

@@ -7,6 +7,10 @@ inputs:
   azure-credentials:
     description: The JSON blob containing the Azure login credentials. Required setting up the RBAC assignments.
     required: true
+  env-vars-to-promote:
+    description: A comma-separated list of environment variables in the Actions environment to promote to App Settings in the Functions app
+    required: false
+    default: ''
   tag:
     description: The name of the component Azure Functions app is being used for. The Functions app is tagged with this value.
     required: true

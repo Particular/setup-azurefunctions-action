@@ -57,12 +57,12 @@ if (-not $?) {
 }
 
 Write-Output "Getting publish profile"
-$publishProfileJson = az functionapp deployment list-publishing-profiles --name $AppName --resource-group $resourceGroup
+$publishProfileXml = az functionapp deployment list-publishing-profiles --name $AppName --resource-group $resourceGroup --xml
 if (-not $?) {
     throw "Unable to get publish profile"
 }
 
 Write-Output "app-name=$AppName" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "hostname=$hostname" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
-Write-Output "::add-mask::$publishProfileJson"
-Write-Output "publish-profile=$publishProfileJson" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
+Write-Output "::add-mask::$publishProfileXml"
+Write-Output "publish-profile=$publishProfileXml" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append

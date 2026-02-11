@@ -64,5 +64,8 @@ if (-not $?) {
 
 Write-Output "app-name=$AppName" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "hostname=$hostname" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
-Write-Output "::add-mask::$publishProfileXml"
+#Write-Output "::add-mask::$publishProfileXml"
 Write-Output "publish-profile=$publishProfileXml" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
+
+Write-Output "Debugging - Dump publish profile"
+Write-Output $publishProfileXml

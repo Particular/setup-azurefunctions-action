@@ -57,7 +57,7 @@ if (-not $?) {
 }
 
 Write-Output "Assigning roles to Azure Functions App $AppName"
-az role assignment create --assignee $credentials.principalId --role "Website Contributor" --scope $details.id > $null
+az role assignment create --assignee $credentials.principalId --role "Website Contributor" --scope $app.id > $null
 if (-not $?) {
     throw "Unable to assign roles to app"
 }

@@ -1,6 +1,5 @@
 param (
     [string]$Suffix,
-    [string]$PublishProfileEnvName,
     [string]$tagName,
     [string]$azureCredentials
 )
@@ -68,5 +67,6 @@ if (-not $?) {
     throw "Unable to get publish profile"
 }
 
+Write-Output "hostname=$hostname" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "::add-mask::$publishProfileJson"
-Write-Output "$PublishProfileEnvName=$publishProfileJson" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+Write-Output "publish-profile=$publishProfileJson" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append

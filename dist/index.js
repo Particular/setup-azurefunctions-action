@@ -4123,7 +4123,6 @@ console.log('Cleanup path: ' + cleanupPs1);
 let isPost = core.getState('IsPost');
 core.saveState('IsPost', true);
 
-let publishProfileEnvName = core.getInput('publish-profile-env-name');
 let azureCredentials = core.getInput('azure-credentials');
 let tagName = core.getInput('tag');
 
@@ -4141,7 +4140,6 @@ async function run() {
             await exec.exec('pwsh', [
                 '-File', setupPs1,
                 '-Suffix', suffix,
-                '-PublishProfileEnvName', publishProfileEnvName,
                 '-tagName', tagName,
                 '-azureCredentials', azureCredentials
             ]);

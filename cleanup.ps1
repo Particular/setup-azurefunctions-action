@@ -8,7 +8,7 @@ $AppName = 'psw-functionapp-' + $Suffix
 $PlanName = 'psw-functionsplan-' + $Suffix
 
 echo "Cleaning up Functions App $AppName in resource group $resourceGroup"
-#az functionapp delete --resource-group $resourceGroup --name $AppName > $null
+az functionapp delete --resource-group $resourceGroup --name $AppName > $null
 
 echo "Cleaning up App Service Plan $PlanName in resource group $resourceGroup"
 az appservice plan delete --resource-group $resourceGroup --name $PlanName --yes > $null

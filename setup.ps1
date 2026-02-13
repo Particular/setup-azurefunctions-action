@@ -92,12 +92,15 @@ $envVarsToPromote -split ',' | ForEach-Object {
 }
 $settingsJson = $settings | ConvertTo-Json
 Write-Output $settingsJson | Out-File -FilePath functions-settings.json -Encoding utf-8
-az functionapp config appsettings set --name $AppName --resource-group $resourceGroup --settings @functions-settings.json
+az functionapp config appsettings set --name $AppName --resource-group $resourceGroup --settings @functions-settings.json > $null
 if (-not $?) {
     throw "Unable to set app settings on Functions app"
 }
 rm functions-settings.json
 
+$readinessSleepLength = $Env:FUNCTIONS_SETUP_SLEEP_LENGTH ?? 30
+echo "Sleeping $readinessSleepLength to allow Functions app to be ready for deployment"
+sleep $readinessSleepLength
 
 Write-Output "app-name=$AppName" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "hostname=$hostname" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append

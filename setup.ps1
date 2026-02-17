@@ -31,7 +31,7 @@ $runnerOsTag = "RunnerOS=$($Env:RUNNER_OS)"
 $dateTag = "Created=$(Get-Date -Format "yyyy-MM-dd")"
 
 Write-Output "Creating storage account $StorageName in resource group $resourceGroup (This can take a while.)"
-$storage = az storage account create --name $StorageName --location $region --resource-group $resourceGroup --sku Standard_LRS --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
+$storage = az storage account create --name $StorageName --location $region --resource-group $resourceGroup --sku Standard_LRS --min-tls-version TLS1_3 --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
 if (-not $?) {
     throw "Unable to set up storage account"
 }

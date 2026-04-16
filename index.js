@@ -16,6 +16,7 @@ core.saveState('IsPost', true);
 let azureCredentials = core.getInput('azure-credentials');
 let tagName = core.getInput('tag');
 let envVarsToPromote = core.getInput('env-vars-to-promote');
+let skipCleanup = core.getInput('skip-cleanup') === 'true';
 
 async function run() {
 
@@ -38,6 +39,11 @@ async function run() {
 
         } else { // Cleanup
 
+            if (skipCleanup) {
+                core.error('Skipping cleanup because skip-cleanup was set to true. This fails the workflow to prevent merging a test-only configuration.');
+                core.setFailed('Failing because test-only skip-cleanup is set to true');
+                return;
+            }
             console.log("Running cleanup");
 
             let suffix = core.getState('Suffix');

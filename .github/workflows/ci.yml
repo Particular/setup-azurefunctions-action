@@ -30,7 +30,6 @@ jobs:
         with:
           azure-credentials: ${{ secrets.AZURE_ACI_CREDENTIALS }}
           tag: setup-azurefunctions-action
-          skip-cleanup: true
       - name: Validate
         shell: pwsh
         env:

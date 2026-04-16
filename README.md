@@ -7,7 +7,7 @@ This action handles the setup and teardown of an Azure Functions app for running
 ```yaml
       - name: Setup Functions App
         id: setup-functions
-        uses: Particular/setup-azurefunctions-action@v1.0.0
+        uses: Particular/setup-azurefunctions-action@v2.0.0
         with:
           azure-credentials: ${{ secrets.AZURE_ACI_CREDENTIALS }}
           tag: PackageName

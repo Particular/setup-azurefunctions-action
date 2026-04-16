@@ -1,6 +1,6 @@
-const path = require('path');
-const core = require('./@actions/core');
-const exec = require('./@actions/exec');
+import * as path from 'path';
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
 
 const setupPs1 = path.resolve(__dirname, '../setup.ps1');
 const cleanupPs1 = path.resolve(__dirname, '../cleanup.ps1');

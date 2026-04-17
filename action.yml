@@ -14,6 +14,9 @@ inputs:
   tag:
     description: The name of the component Azure Functions app is being used for. The Functions app is tagged with this value.
     required: true
+  skip-cleanup:
+    description: For testing only, set to 'true' to skip the cleanup step so the Azure resources can be inspected. Causes an error on cleanup to prevent merging a branch in test mode.
+    required: false
 outputs:
   app-name:
     description: The app name for the created Functions app
@@ -22,6 +25,6 @@ outputs:
   hostname:
     description: The primary host name for the created Functions app
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
   post: dist/index.js

@@ -48,18 +48,14 @@ $app = az functionapp create --name $AppName --resource-group $resourceGroup `
     --storage-account $StorageName `
     --plan $PlanName `
     --functions-version "4" `
+    --runtime dotnet-isolated `
+    --runtime-version 10.0 `    
     --disable-app-insights true `
     --https-only true `
     --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
 if (-not $?) {
     throw "Unable to set up Functions app"
 }
-
-Write-Output "Setting .NET runtime to .NET 10"
-az functionapp config set `
-    --name $AppName `
-    --resource-group $resourceGroup `
-    --net-framework-version v10.0 > $null
 
 $hostname = $app.defaultHostName
 Write-Output "Functions app host is $hostname"

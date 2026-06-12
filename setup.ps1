@@ -54,6 +54,13 @@ $app = az functionapp create --name $AppName --resource-group $resourceGroup `
 if (-not $?) {
     throw "Unable to set up Functions app"
 }
+
+Write-Output "Setting .NET runtime to .NET 10"
+az functionapp config set `
+    --name $AppName `
+    --resource-group $resourceGroup `
+    --net-framework-version v10.0 > $null
+
 $hostname = $app.defaultHostName
 Write-Output "Functions app host is $hostname"
 

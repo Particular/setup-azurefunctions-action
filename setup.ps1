@@ -49,7 +49,7 @@ $app = az functionapp create --name $AppName --resource-group $resourceGroup `
     --plan $PlanName `
     --functions-version "4" `
     --runtime dotnet-isolated `
-    --runtime-version 10.0 `    
+    --runtime-version 10.0 ` 
     --disable-app-insights true `
     --https-only true `
     --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json

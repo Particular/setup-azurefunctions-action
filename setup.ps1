@@ -48,12 +48,15 @@ $app = az functionapp create --name $AppName --resource-group $resourceGroup `
     --storage-account $StorageName `
     --plan $PlanName `
     --functions-version "4" `
+    --runtime dotnet-isolated `
+    --runtime-version "10" `
     --disable-app-insights true `
     --https-only true `
     --tags $packageTag $runnerOsTag $dateTag | ConvertFrom-Json
 if (-not $?) {
     throw "Unable to set up Functions app"
 }
+
 $hostname = $app.defaultHostName
 Write-Output "Functions app host is $hostname"
 

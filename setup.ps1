@@ -85,6 +85,8 @@ if (-not $?) {
 Write-Output "Promoting env vars in list '$envVarsToPromote' to the Functions app"
 $settings = @{
     'FUNCTIONS_WORKER_RUNTIME' = 'dotnet-isolated'
+    'SCM_DO_BUILD_DURING_DEPLOYMENT' = 'false'
+    'ENABLE_ORYX_BUILD' = 'false'
 }
 $envVarsToPromote -split ',' | ForEach-Object {
     $key = $_

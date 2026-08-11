@@ -18,6 +18,8 @@ inputs:
     description: For testing only, set to 'true' to skip the cleanup step so the Azure resources can be inspected. Causes an error on cleanup to prevent merging a branch in test mode.
     required: false
 outputs:
+  azure-functions-tools-module-path:
+    description: The path to the AzureFunctionsTools PowerShell module shipped with this action. Import it to promote environment variables to the running Functions app after creation.
   app-name:
     description: The app name for the created Functions app
   publish-profile:

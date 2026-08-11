@@ -34,7 +34,7 @@ az login
 az account set --subscription SUBSCRIPTION_ID
 ```
 
-When changing `index.js`, either run `npm run dev` beforehand, which will watch the file for changes and automatically compile it, or run `npm run prepare` afterwards.
+When changing `index.mjs`, either run `npm run dev` beforehand, which will watch the file for changes and automatically compile it, or run `npm run prepare` afterwards.
 
 ## Testing
 

@@ -18,6 +18,22 @@ The result of the action is expressed in output variables, which requires the wo
 * `${{ steps.setup-functions.outputs.app-name}}` - The app name, which can be used with the [azure/webapps-deploy action](https://github.com/azure/webapps-deploy).
 * `${{ steps.setup-functions.outputs.publish-profile }}` - The publish profile of the created Functions app, which can be used with the [azure/webapps-deploy action](https://github.com/azure/webapps-deploy).
 * `${{ steps.setup-functions.outputs.hostname }}` - The created Functions app host name, which can be used to construct URLs
+* `${{ steps.setup-functions.outputs.azure-functions-tools-module-path }}` - The path to the `AzureFunctionsTools` PowerShell module shipped with this action, used to promote environment variables to the running app after creation (see below).
+
+## Promoting environment variables to a running app
+
+Environment variables passed via `env-vars-to-promote` are applied as App Settings when the Functions app is provisioned. Variables that are not set at that point are skipped with a warning, so values produced by a parallel step can be promoted after the app is running.
+
+The action ships a PowerShell module (`AzureFunctionsTools`) that encapsulates the promotion, mirroring how `setup-wsl-action` exports `WslTools`. Import it from the `azure-functions-tools-module-path` output and call `Set-FunctionAppSettings`:
+
+```yaml
+      - name: Promote environment variables to Functions app
+        run: |
+          Import-Module '${{ steps.setup-functions.outputs.azure-functions-tools-module-path }}' -Force
+          Set-FunctionAppSettings -AppName '${{ steps.setup-functions.outputs.app-name }}' -EnvVarNames 'AzureWebJobsServiceBus'
+```
+
+This pairs with running `setup-azureservicebus-action` and this action in a GitHub Actions `parallel:` block: once the block completes, the Service Bus connection string is in the runner environment and the Functions app is running, so the connection string can be pushed into App Settings before deployment.
 
 ## License
 

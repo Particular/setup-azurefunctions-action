@@ -90,11 +90,15 @@ $settings = @{
     'WEBSITE_RUN_FROM_PACKAGE' = '1'
 }
 $envVarsToPromote -split ',' | ForEach-Object {
-    $key = $_
-    if ($key -gt 0) {
-        $value = Get-Content Env:$key
-        $settings.$key = $value
+    $key = $_.Trim()
+    if ([string]::IsNullOrWhiteSpace($key)) {
+        return
     }
+    if (-not (Test-Path Env:$key)) {
+        Write-Warning "Environment variable '$key' is not set; skipping promotion to Functions app settings. Promote it after the app is running with Set-FunctionAppSettings from the AzureFunctionsTools module (see the azure-functions-tools-module-path output)."
+        return
+    }
+    $settings.$key = Get-Content Env:$key
 }
 $settingsJson = $settings | ConvertTo-Json
 Write-Output $settingsJson | Out-File -FilePath functions-settings.json -Encoding utf-8
@@ -108,6 +112,8 @@ $readinessSleepLength = $Env:FUNCTIONS_SETUP_SLEEP_LENGTH ?? 30
 echo "Sleeping $readinessSleepLength to allow Functions app to be ready for deployment"
 sleep $readinessSleepLength
 
+$modulePath = Join-Path $PSScriptRoot 'modules' 'AzureFunctionsTools'
+Write-Output "azure-functions-tools-module-path=$modulePath" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "app-name=$AppName" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "hostname=$hostname" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
 Write-Output "::add-mask::$publishProfileXml"
